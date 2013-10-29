@@ -410,7 +410,29 @@ class Directory (entry.Entry) :
         '''
         if tgt    :  return self._adaptor.remove (tgt, flags, ttype=ttype)
         else      :  return self._nsentry.remove (     flags, ttype=ttype)
-  
+
+    # --------------------------------------------------------------------------
+    #
+    @rus.takes   ('Directory',
+                  rus.optional (rus.one_of (SYNC, ASYNC, TASK)))
+    @rus.returns ((rus.nothing, st.Task))
+    def remove_self (self, flags=0, ttype=None) :
+        '''
+        :param flags:  Flags to use for the operation.
+
+        ttype:         saga.task.type enum
+        ret:           None / saga.Task
+        
+        Reove the entry.
+
+        The entry is removed, and this object instance is then invalid for
+        further operations.
+
+            # remove an entry
+            entry = saga.namespace.Directory("sftp://localhost/tmp/data/data.bin")
+            entry.remove ()
+        '''
+        return self._adaptor.remove_self (flags, ttype=ttype) 
     
     # --------------------------------------------------------------------------
     #
