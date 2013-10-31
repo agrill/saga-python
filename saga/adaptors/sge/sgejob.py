@@ -932,6 +932,12 @@ class SGEJob (saga.adaptors.cpi.job.Job):
     # ----------------------------------------------------------------
     #
     @SYNC_CALL
+    def get_description (self):
+        return self.jd
+
+    # ----------------------------------------------------------------
+    #
+    @SYNC_CALL
     def get_state(self):
         """ mplements saga.adaptors.cpi.job.Job.get_state()
         """
