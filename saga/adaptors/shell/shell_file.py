@@ -336,6 +336,13 @@ class ShellDirectory (saga.adaptors.cpi.filesystem.Directory) :
 
 
     # ----------------------------------------------------------------
+    #
+    @SYNC_CALL
+    def close (self):
+        self.finalize (kill=True)
+
+
+    # ----------------------------------------------------------------
     @SYNC_CALL
     def get_url (self) :
 
@@ -353,20 +360,14 @@ class ShellDirectory (saga.adaptors.cpi.filesystem.Directory) :
 
         # FIXME: eval flags
 
-        if  None != npat:
-            if npat[end] == "/":
-                npat += "*"
-            elif npat[end] != "*":
-                npat += "*"
+        if  None == npat :
+            npat = ""
+        else :
+            npat = "-d %s" % npat
                 
-            ret, out, _ = self.shell.run_sync ("/bin/ls -C1 -d %s\n" % npat)
+        ret, out, _ = self.shell.run_sync ("/bin/ls -C1 %s\n" % npat)
             
             if  ret != 0 :
-                raise saga.NoSuccess ("failed to list(): (%s)(%s)" \
-                                    % (ret, out))
-        else:
-            ret, out, _ = self.shell.run_sync ("/bin/ls -C1 -d |grep -v '.'\n")
-            if  ret == 2:
                 raise saga.NoSuccess ("failed to list(): (%s)(%s)" \
                                    % (ret, out))
 
@@ -903,6 +904,13 @@ class ShellFile (saga.adaptors.cpi.filesystem.File) :
             self.local = None
 
         self.valid = False
+
+
+    # ----------------------------------------------------------------
+    #
+    @SYNC_CALL
+    def close (self):
+        self.finalize (kill=True)
 
 
     # ----------------------------------------------------------------
