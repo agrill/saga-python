@@ -353,13 +353,22 @@ class ShellDirectory (saga.adaptors.cpi.filesystem.Directory) :
 
         # FIXME: eval flags
 
-        if  None == npat :
-            npat = "*"
-
-        ret, out, _ = self.shell.run_sync ("/bin/ls -C1 -d %s\n" % npat)
-        if  ret != 0 :
-            raise saga.NoSuccess ("failed to list(): (%s)(%s)" \
-                               % (ret, out))
+        if  None != npat:
+            if npat[end] == "/":
+                npat += "*"
+            elif npat[end] != "*":
+                npat += "*"
+                
+            ret, out, _ = self.shell.run_sync ("/bin/ls -C1 -d %s\n" % npat)
+            
+            if  ret != 0 :
+                raise saga.NoSuccess ("failed to list(): (%s)(%s)" \
+                                    % (ret, out))
+        else:
+            ret, out, _ = self.shell.run_sync ("/bin/ls -C1 -d |grep -v '.'\n")
+            if  ret == 2:
+                raise saga.NoSuccess ("failed to list(): (%s)(%s)" \
+                                   % (ret, out))
 
         lines = filter (None, out.split ("\n"))
         self._logger.debug (lines)
