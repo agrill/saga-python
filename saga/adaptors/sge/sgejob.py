@@ -39,17 +39,17 @@ class SgeKeyValueParser(object):
     KEY_VALUE_RE = re.compile(r"^([^ ]+) +(.+)$")
 
     def __init__(self, stream, filter_keys=None, key_suffix=None):
-    """
-        :param stream: an string or a file-like object implementing readline()
-        :param filter_keys: an iterable with the list of keys of interest.
-        :param key_suffix: a key suffix to remove when parsing
+        """
+            :param stream: an string or a file-like object implementing readline()
+            :param filter_keys: an iterable with the list of keys of interest.
+            :param key_suffix: a key suffix to remove when parsing
         """
 
         # check whether it is an string or a file-like object
         if isinstance(stream, basestring):
             self.stream = StringIO(stream)
-    else:
-            self.stream = stream
+        else:
+                self.stream = stream
 
         self.filter_keys = set(filter_keys) if filter_keys is not None else None
         self.key_suffix = key_suffix
@@ -766,7 +766,6 @@ class SGEJobService (saga.adaptors.cpi.job.Service):
     #
 
     def _job_run(self, jd):
-        """ runs a job via qsub
         """
         Runs a job via qsub
         """
@@ -810,31 +809,32 @@ class SGEJobService (saga.adaptors.cpi.job.Service):
             message = "Error running job via 'qsub': %s. Commandline was: %s" % (out, cmdline)
             log_error_and_raise(message, saga.NoSuccess, self._logger)
 
-            # stdout contains the job id:
+        # stdout contains the job id:
             # Your job 1036608 ("testjob") has been submitted
         sge_job_id = None
-            for line in out.split('\n'):
-                if line.find("Your job") != -1:
+        for line in out.split('\n'):
+            if line.find("Your job") != -1:
                 sge_job_id = line.split()[2]
+        
         if sge_job_id is None:
-                message = "Couldn't parse job id from 'qsub' output: %s" % out
-                log_error_and_raise(message, saga.NoSuccess, self._logger)
+            message = "Couldn't parse job id from 'qsub' output: %s" % out
+            log_error_and_raise(message, saga.NoSuccess, self._logger)
 
         job_id = "[%s]-[%s]" % (self.rm, sge_job_id)
-            self._logger.info("Submitted SGE job with id: %s" % job_id)
+        self._logger.info("Submitted SGE job with id: %s" % job_id)
+        
+        # add job to internal list of known jobs.
+        self.jobs[job_id] = {
+            'state':        saga.job.PENDING,
+            'exec_hosts':   None,
+            'returncode':   None,
+            'create_time':  None,
+            'start_time':   None,
+            'end_time':     None,
+            'gone':         False
+        }
 
-            # add job to internal list of known jobs.
-            self.jobs[job_id] = {
-                'state':        saga.job.PENDING,
-                'exec_hosts':   None,
-                'returncode':   None,
-                'create_time':  None,
-                'start_time':   None,
-                'end_time':     None,
-                'gone':         False
-            }
-
-            return job_id
+        return job_id
 
     # ----------------------------------------------------------------
     #
@@ -930,7 +930,7 @@ class SGEJobService (saga.adaptors.cpi.job.Service):
         self._logger.debug("job_info(%s)=[%s]" % (pid, ", ".join(["%s=%s" % (k, str(job_info[k])) for k in [
                 "state", "returncode", "exec_hosts", "create_time", "start_time", "end_time", "gone"]])))
 
-            return job_info
+        return job_info
 
     # ----------------------------------------------------------------
     #
