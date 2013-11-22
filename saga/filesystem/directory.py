@@ -1,5 +1,5 @@
 
-__author__    = "Andre Merzky, Ole Weidner, Alexander Grill"
+__author__    = "Andre Merzky, Ole Weidner"
 __copyright__ = "Copyright 2012-2013, The SAGA Project"
 __license__   = "MIT"
 
@@ -191,19 +191,6 @@ class Directory (nsdir.Directory) :
     # --------------------------------------------------------------------------
     #
     @rus.takes   ('Directory', 
-                  rus.optional (bool))
-    @rus.returns (st.Task)
-    def close     (self, kill=True, ttype=None) :
-        '''
-        kill :    bool
-        ttype:    saga.task.type enum
-        ret:      string / bytearray / saga.Task
-        '''
-        return self._adaptor.finalize (kill)
-
-    # --------------------------------------------------------------------------
-    #
-    @rus.takes   ('Directory', 
                   rus.optional ((surl.Url, basestring)),
                   rus.optional (rus.one_of (SYNC, ASYNC, TASK)))
     @rus.returns ((bool, st.Task))
@@ -224,6 +211,17 @@ class Directory (nsdir.Directory) :
 
     size  = property (get_size)  # int
 
-    
+
+    # --------------------------------------------------------------------------
+    #
+    @rus.takes     ('Directory')
+    @rus.returns   (rus.nothing)
+    def close(self):
+        """
+        close(timeout=None)
+
+        Closes the direcotry object. 
+        """
+        return self._adaptor.close()
 
 
