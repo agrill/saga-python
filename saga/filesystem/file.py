@@ -346,7 +346,7 @@ class File (nsentry.Entry) :
 
         Closes the file object. 
         """
-        return self._adaptor.close()
+        return self._adaptor.close(timeout=None)
   
     # --------------------------------------------------------------------------
     #

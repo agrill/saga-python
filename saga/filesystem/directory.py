@@ -222,6 +222,6 @@ class Directory (nsdir.Directory) :
 
         Closes the direcotry object. 
         """
-        return self._adaptor.close()
+        return self._adaptor.close(timeout=None)
 
 
