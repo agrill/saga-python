@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-__author__    = "Andre Merzky, Christian Pérez-Llamas, Ole Weidner, Thomas Schatz"
+__author__    = "Andre Merzky, Christian Pérez-Llamas, Ole Weidner, Thomas Schatz, Alexander Grill"
 __copyright__ = "Copyright 2012-2013, The SAGA Project"
 __license__   = "MIT"
 
@@ -797,7 +797,12 @@ class SGEJobService (saga.adaptors.cpi.job.Service):
             self.__remote_mkdir(os.path.dirname(jd.output))
 
         # submit the SGE script
-        cmdline = 'echo "%s" | %s -notify' % (script, self._commands['qsub']['path'])
+        # Now we want to execute the script. This process consists of two steps:
+        # (1) we create a temporary file with 'mktemp' and write the contents of 
+        #     the generated PBS script into it
+        # (2) we call 'qsub <tmpfile>' to submit the script to the queueing system
+        cmdline = """SCRIPTFILE=`mktemp -t SAGA-Python-SGEJobScript.XXXXXX` &&  echo "%s" > $SCRIPTFILE && %s -notify $SCRIPTFILE""" %  (script, self._commands['qsub']['path'])
+        #cmdline = 'echo "%s" | %s -notify' % (script, self._commands['qsub']['path'])
         ret, out, _ = self.shell.run_sync(cmdline)
 
         if ret != 0:
@@ -1208,6 +1213,12 @@ class SGEJob (saga.adaptors.cpi.job.Job):
             self._started = False
 
         return self.get_api()
+
+    # ----------------------------------------------------------------
+    #
+    @SYNC_CALL
+    def get_description (self):
+        return self.jd
 
     # ----------------------------------------------------------------
     #
