@@ -5,6 +5,7 @@ __license__   = "MIT"
 
 
 # namespace flags enum:
+NONE           =    0
 OVERWRITE      =    1
 RECURSIVE      =    2
 DEREFERENCE    =    4

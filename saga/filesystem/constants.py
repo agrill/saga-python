@@ -7,6 +7,7 @@ __license__   = "MIT"
 import saga.namespace.constants as ns
 
 # filesystem flags enum:
+NONE           = ns.NONE            #      0
 OVERWRITE      = ns.OVERWRITE       #      1
 RECURSIVE      = ns.RECURSIVE       #      2
 DEREFERENCE    = ns.DEREFERENCE     #      4

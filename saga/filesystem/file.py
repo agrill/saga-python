@@ -350,13 +350,13 @@ class File (nsentry.Entry) :
   
     # --------------------------------------------------------------------------
     #
-    @rus.takes     ('File')
-    @rus.returns   (rus.nothing)
+    @rus.takes     ('File',
+                    rus.optional (int),
+                    rus.optional (rus.one_of (SYNC, ASYNC, TASK)))
+    @rus.returns (st.Task)
     def remove(self):
         """
-        close(timeout=None)
-
         Removes the file from disc and invalidates file object. 
         """
-        return self._adaptor.remove_self()
+        return self._adaptor.remove_self(0)
 
